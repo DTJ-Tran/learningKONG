@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  kong-database:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: kong
+    volumes:
+      - kong_data:/var/lib/postgresql/data
+    networks:
+      - kong-net
+
+
+  kong:
+    image: kong:3.4
+    depends_on:
+      - kong-database
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - "8000:8000"   # Kong Proxy
+      - "8001:8001"   # Kong Admin API
+    command: kong start
+    networks:
+      - kong-net
+
+  flask-api:
+    build: ./flask-api
+    expose:
+      - "5001"
+    networks:
+      - kong-net
+    
+  flask-ui:
+    build: ./flask-ui
+    expose:
+      - "5002"
+    networks:
+      - kong-net
+
+volumes:
+  kong_data:
+
+networks:
+  kong-net:
