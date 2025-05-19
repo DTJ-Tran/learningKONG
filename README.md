@@ -8,6 +8,8 @@ This project demonstrates how to use **Kong API Gateway** to manage and route re
 
 ## 🧱 Project Structure
 
+<pre>
+```plaintext
 learningKONG/
 ├── flask-api/         # Backend Flask app (API)
 │   └── app.py
@@ -17,8 +19,9 @@ learningKONG/
 │   └── requirements.txt
 ├── docker-compose.yml
 └── README.md
+```
+</pre>
 
----
 
 ## 📦 Setup Instructions
 
